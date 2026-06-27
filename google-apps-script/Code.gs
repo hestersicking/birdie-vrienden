@@ -94,12 +94,19 @@ function setupBetalingen() {
   var ss = SpreadsheetApp.openById(SHEET_ID);
 
   var sheet = ss.getSheetByName("Betalingen");
-  if (!sheet) {
-    sheet = ss.insertSheet("Betalingen");
-  } else {
+  if (sheet) {
+    var ui = SpreadsheetApp.getUi();
+    var antwoord = ui.alert(
+      "Betalingen-tabblad bestaat al",
+      "Wil je het volledig opnieuw aanmaken? Alle betalingsdata gaat verloren.",
+      ui.ButtonSet.YES_NO
+    );
+    if (antwoord !== ui.Button.YES) return;
     sheet.clear();
     sheet.clearDataValidations();
     sheet.setConditionalFormatRules([]);
+  } else {
+    sheet = ss.insertSheet("Betalingen");
   }
 
   sheet.appendRow(["NAAM"]);
@@ -310,6 +317,17 @@ function buildOverzichtFormulas_() {
 // ─────────────────────────────────────────────────────────────────────────────
 function setupOverzicht() {
   var ss = SpreadsheetApp.openById(SHEET_ID);
+
+  var heeftData = ss.getSheetByName("Birdies") || ss.getSheetByName("Overzicht");
+  if (heeftData) {
+    var ui = SpreadsheetApp.getUi();
+    var antwoord = ui.alert(
+      "Tabbladen bestaan al",
+      "Wil je Birdies en Overzicht volledig opnieuw aanmaken? Alle toernooigegevens gaan verloren.",
+      ui.ButtonSet.YES_NO
+    );
+    if (antwoord !== ui.Button.YES) return;
+  }
 
   // ── Tabblad "Birdies" ──────────────────────────────────────────────────────
   var birdiesSheet = ss.getSheetByName("Birdies");
