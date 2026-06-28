@@ -70,6 +70,7 @@ function onOpen() {
     .createMenu('Birdie Vrienden')
     .addItem('Setup Overzicht + Birdies',        'setupOverzicht')
     .addItem('Setup Betalingen',                 'setupBetalingen')
+    .addItem('Setup Eenmalige Sponsors',          'setupEenmaligSponsors')
     .addItem('Refresh Overzicht formulas',       'refreshOverzichtFormulas')
     .addItem('Setup Aanmeldingen (ACTIEF kolom)','setupAanmeldingenKolommen')
     .addItem('Voeg datumpicker toe aan Birdies', 'setupBirdiesDatumPicker')
