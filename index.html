@@ -274,6 +274,36 @@
       .card { padding: 1.5rem 1.25rem; }
       .amount-grid { grid-template-columns: 1fr; }
     }
+
+    /* Tab switcher */
+    .tab-switcher {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+      background: var(--lila-l);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 0.35rem;
+    }
+    .tab-btn {
+      flex: 1;
+      padding: 0.55rem 0.75rem;
+      border: none;
+      border-radius: 9px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.88rem;
+      font-weight: 500;
+      cursor: pointer;
+      background: transparent;
+      color: var(--muted);
+      transition: background 0.15s, color 0.15s;
+    }
+    .tab-btn.active {
+      background: white;
+      color: var(--pink-d);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+      font-weight: 600;
+    }
   </style>
 </head>
 <body>
@@ -288,6 +318,12 @@
   <div class="card">
 
     <div id="form-state">
+      <!-- Tab switcher -->
+      <div class="tab-switcher">
+        <button class="tab-btn active" id="tab-per-birdie" onclick="switchTab('per_birdie')">Per birdie</button>
+        <button class="tab-btn"        id="tab-eenmalig"   onclick="switchTab('eenmalig')">Eenmalig</button>
+      </div>
+
       <p class="section-label">Jouw gegevens</p>
 
       <div class="field">
@@ -309,9 +345,12 @@
       </div>
 
       <hr class="divider" />
-      <p class="section-label">Jouw sponsorbedrag</p>
 
-      <div class="field">
+      <!-- Per birdie sectie -->
+      <div id="section-per-birdie">
+        <p class="section-label">Jouw sponsorbedrag</p>
+
+        <div class="field">
           <label for="per-birdie">Bedrag per birdie (€)</label>
           <div class="preset-row">
             <button class="preset" data-val="2"   onclick="setPreset(this,'per-birdie')">€2</button>
@@ -328,41 +367,65 @@
           <p class="hint">Eenmaal bereikt, geen verdere kosten.</p>
         </div>
 
-      <hr class="divider" />
-      <p class="section-label">Whatsapp groep</p>
+        <hr class="divider" />
+        <p class="section-label">Whatsapp groep</p>
 
-      <label class="check-wrap" for="whatsapp">
-        <input type="checkbox" id="whatsapp" />
-        <div>
-          <div class="check-text"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="18" height="18" style="vertical-align:-3px;margin-right:5px;flex-shrink:0"><circle cx="16" cy="16" r="16" fill="#25D366"/><path d="M23.5 8.5A10.44 10.44 0 0 0 16 5.5a10.5 10.5 0 0 0-9.1 15.7L5.5 26.5l5.5-1.4A10.5 10.5 0 0 0 26.5 16a10.44 10.44 0 0 0-3-7.5zm-7.5 16.1a8.7 8.7 0 0 1-4.4-1.2l-.3-.2-3.2.8.9-3.1-.2-.3a8.72 8.72 0 1 1 7.2 4zm4.8-6.5c-.3-.1-1.6-.8-1.8-.9s-.4-.1-.6.1-.7.9-.8 1.1-.3.2-.6 0a7.27 7.27 0 0 1-2.1-1.3 8 8 0 0 1-1.5-1.8c-.2-.3 0-.5.1-.6l.4-.5.3-.5v-.5l-.9-2.1c-.2-.5-.5-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.8 11.93 11.93 0 0 0 4.5 4 5 5 0 0 0 3 .6 2.76 2.76 0 0 0 1.8-1.3 2.2 2.2 0 0 0 .2-1.3c0-.1-.3-.2-.5-.3z" fill="#fff"/></svg>Ja, voeg mij toe aan de Vrienden van Hester WhatsApp-groep</div>
-          <div class="check-sub">Je volgt mijn leven op Tour van dichtbij — de goede rondes, de mindere dagen en alles daartussen. Alleen berichten van mij, geen spam.</div>
+        <label class="check-wrap" for="whatsapp">
+          <input type="checkbox" id="whatsapp" />
+          <div>
+            <div class="check-text"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="18" height="18" style="vertical-align:-3px;margin-right:5px;flex-shrink:0"><circle cx="16" cy="16" r="16" fill="#25D366"/><path d="M23.5 8.5A10.44 10.44 0 0 0 16 5.5a10.5 10.5 0 0 0-9.1 15.7L5.5 26.5l5.5-1.4A10.5 10.5 0 0 0 26.5 16a10.44 10.44 0 0 0-3-7.5zm-7.5 16.1a8.7 8.7 0 0 1-4.4-1.2l-.3-.2-3.2.8.9-3.1-.2-.3a8.72 8.72 0 1 1 7.2 4zm4.8-6.5c-.3-.1-1.6-.8-1.8-.9s-.4-.1-.6.1-.7.9-.8 1.1-.3.2-.6 0a7.27 7.27 0 0 1-2.1-1.3 8 8 0 0 1-1.5-1.8c-.2-.3 0-.5.1-.6l.4-.5.3-.5v-.5l-.9-2.1c-.2-.5-.5-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.8 11.93 11.93 0 0 0 4.5 4 5 5 0 0 0 3 .6 2.76 2.76 0 0 0 1.8-1.3 2.2 2.2 0 0 0 .2-1.3c0-.1-.3-.2-.5-.3z" fill="#fff"/></svg>Ja, voeg mij toe aan de Vrienden van Hester WhatsApp-groep</div>
+            <div class="check-sub">Je volgt mijn leven op Tour van dichtbij — de goede rondes, de mindere dagen en alles daartussen. Alleen berichten van mij, geen spam.</div>
+          </div>
+        </label>
+      </div>
+
+      <!-- Eenmalig sectie -->
+      <div id="section-eenmalig" style="display:none;">
+        <p class="section-label">Jouw eenmalige bijdrage</p>
+
+        <div class="field">
+          <label for="bedrag-eenmalig">Bedrag (€) <span class="opt">(verplicht)</span></label>
+          <input type="number" id="bedrag-eenmalig" placeholder="Bijv. 25" min="1" step="1" />
+          <div class="error-msg" id="err-eenmalig">Vul een bedrag in (min. €1).</div>
         </div>
-      </label>
+      </div>
 
       <button class="btn" id="submit-btn" onclick="submitForm()">Aanmelden als Birdie Vriend 🐥</button>
 
-      <p class="terms">
+      <p class="terms" id="terms-per-birdie">
         Je ontvangt na elke 3 toernooien een betaalverzoek voor het gemaakte aantal birdies. Heb je een seizoenscap ingesteld? Dan stoppen de Tikkies zodra dat bedrag is bereikt. Het seizoen loopt tot en met december 2026. Afmelden kan altijd via <a href="mailto:hestersickinggolf@gmail.com">hestersickinggolf@gmail.com</a>.
+      </p>
+      <p class="terms" id="terms-eenmalig" style="display:none;">
+        Je ontvangt een betaalverzoek voor je eenmalige bijdrage. Bedankt voor je steun! Vragen? Mail naar <a href="mailto:hestersickinggolf@gmail.com">hestersickinggolf@gmail.com</a>.
       </p>
     </div>
 
     <div class="thankyou" id="thankyou-state">
       <div class="big-bird">⛳</div>
-      <h2>Welkom, Birdie Vriend!</h2>
-      <p>Je aanmelding is ontvangen — Alvast bedankt.</p>
+      <h2 id="thankyou-title">Welkom, Birdie Vriend!</h2>
+      <p id="thankyou-msg">Je aanmelding is ontvangen — Alvast bedankt.</p>
     </div>
 
   </div>
 </div>
 
 <script>
-  // ─────────────────────────────────────────────────────────────────
-  // STAP 1: Plak hier de Web App URL die je krijgt na het deployen
-  //         van google-apps-script/Code.gs in Google Apps Script.
-  //
-  //   Formaat: https://script.google.com/macros/s/JOUW_ID/exec
-  // ─────────────────────────────────────────────────────────────────
   const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxhaBC5EC2RZLF52TfssrEoZn6Idi990Dh2giZejemrNvoMn9oQb_Q1UQ4rOBVgLeAf/exec";
+
+  var currentTab = 'per_birdie';
+
+  function switchTab(tab) {
+    currentTab = tab;
+    document.getElementById('tab-per-birdie').classList.toggle('active', tab === 'per_birdie');
+    document.getElementById('tab-eenmalig').classList.toggle('active', tab === 'eenmalig');
+    document.getElementById('section-per-birdie').style.display = tab === 'per_birdie' ? '' : 'none';
+    document.getElementById('section-eenmalig').style.display   = tab === 'eenmalig'   ? '' : 'none';
+    document.getElementById('terms-per-birdie').style.display   = tab === 'per_birdie' ? '' : 'none';
+    document.getElementById('terms-eenmalig').style.display     = tab === 'eenmalig'   ? '' : 'none';
+    document.getElementById('submit-btn').textContent            = tab === 'per_birdie'
+      ? 'Aanmelden als Birdie Vriend 🐥'
+      : 'Eenmalig sponsoren';
+  }
 
   function setPreset(btn, fieldId) {
     document.getElementById(fieldId).value = btn.dataset.val;
@@ -370,23 +433,31 @@
     btn.classList.add('active');
   }
 
+  function clearErrors() {
+    ['naam','email','telefoon','birdie','eenmalig'].forEach(function(k) {
+      var el = document.getElementById('err-' + k);
+      if (el) el.style.display = 'none';
+    });
+    ['naam','email','telefoon','per-birdie','bedrag-eenmalig'].forEach(function(id) {
+      var el = document.getElementById(id);
+      if (el) el.classList.remove('invalid');
+    });
+  }
+
   function submitForm() {
-    let ok = true;
+    clearErrors();
+    var ok = true;
 
-    const naam     = document.getElementById('naam');
-    const email    = document.getElementById('email');
-    const telefoon = document.getElementById('telefoon');
-    const birdie   = document.getElementById('per-birdie');
-
-    [naam, email, telefoon, birdie].forEach(el => el.classList.remove('invalid'));
-    ['err-naam','err-email','err-telefoon','err-birdie'].forEach(id => document.getElementById(id).style.display = 'none');
+    var naam     = document.getElementById('naam');
+    var email    = document.getElementById('email');
+    var telefoon = document.getElementById('telefoon');
 
     if (!naam.value.trim()) {
       naam.classList.add('invalid');
       document.getElementById('err-naam').style.display = 'block';
       ok = false;
     }
-    const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    var emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRe.test(email.value.trim())) {
       email.classList.add('invalid');
       document.getElementById('err-email').style.display = 'block';
@@ -397,54 +468,76 @@
       document.getElementById('err-telefoon').style.display = 'block';
       ok = false;
     }
-    if (!birdie.value || parseFloat(birdie.value) < 0.5) {
-      birdie.classList.add('invalid');
-      document.getElementById('err-birdie').style.display = 'block';
-      ok = false;
+
+    var payload;
+    if (currentTab === 'per_birdie') {
+      var birdie = document.getElementById('per-birdie');
+      if (!birdie.value || parseFloat(birdie.value) < 0.5) {
+        birdie.classList.add('invalid');
+        document.getElementById('err-birdie').style.display = 'block';
+        ok = false;
+      }
+      if (!ok) return;
+      payload = {
+        type:        'per_birdie',
+        naam:        naam.value.trim(),
+        email:       email.value.trim(),
+        telefoon:    telefoon.value.trim(),
+        per_birdie:  parseFloat(birdie.value),
+        max_seizoen: parseFloat(document.getElementById('max-seizoen').value) || null,
+        whatsapp:    document.getElementById('whatsapp').checked,
+      };
+    } else {
+      var bedrag = document.getElementById('bedrag-eenmalig');
+      if (!bedrag.value || parseFloat(bedrag.value) < 1) {
+        bedrag.classList.add('invalid');
+        document.getElementById('err-eenmalig').style.display = 'block';
+        ok = false;
+      }
+      if (!ok) return;
+      payload = {
+        type:     'eenmalig',
+        naam:     naam.value.trim(),
+        email:    email.value.trim(),
+        telefoon: telefoon.value.trim(),
+        bedrag:   parseFloat(bedrag.value),
+      };
     }
 
-    if (!ok) return;
-
-    const btn = document.getElementById('submit-btn');
+    var btn = document.getElementById('submit-btn');
     btn.disabled = true;
     btn.textContent = 'Bezig met verzenden…';
 
-    const payload = {
-      naam:        naam.value.trim(),
-      email:       email.value.trim(),
-      telefoon:    document.getElementById('telefoon').value.trim(),
-      per_birdie:  parseFloat(birdie.value),
-      max_seizoen: parseFloat(document.getElementById('max-seizoen').value) || null,
-      whatsapp:    document.getElementById('whatsapp').checked,
-    };
-
     fetch(APPS_SCRIPT_URL, {
       method: 'POST',
-      // Apps Script Web Apps require no-cors when called cross-origin from a browser.
-      // The response will be opaque (status 0) but the data is still written to the sheet.
       mode: 'no-cors',
       headers: { 'Content-Type': 'text/plain' },
       body: JSON.stringify(payload),
     })
-    .then(() => showThanks())
-    .catch(() => {
+    .then(function() { showThanks(); })
+    .catch(function() {
       btn.disabled = false;
-      btn.textContent = 'Aanmelden als Birdie Vriend 🐥';
+      btn.textContent = currentTab === 'per_birdie' ? 'Aanmelden als Birdie Vriend 🐥' : 'Eenmalig sponsoren';
       alert('Er ging iets mis. Controleer je internetverbinding en probeer opnieuw.');
     });
   }
 
   function showThanks() {
     document.getElementById('form-state').style.display = 'none';
-    document.getElementById('thankyou-state').style.display = 'block';
+    var state = document.getElementById('thankyou-state');
+    state.style.display = 'block';
+    if (currentTab === 'eenmalig') {
+      document.getElementById('thankyou-title').textContent = 'Bedankt voor je donatie!';
+      document.getElementById('thankyou-msg').textContent   = 'Je eenmalige bijdrage is ontvangen — super bedankt!';
+    }
   }
 
-  // Sync preset highlight when user types manually
-  ['per-birdie','max-seizoen'].forEach(id => {
-    document.getElementById(id).addEventListener('input', function() {
-      this.closest('.field').querySelectorAll('.preset').forEach(b => {
+  ['per-birdie','max-seizoen'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) el.addEventListener('input', function() {
+      this.closest('.field').querySelectorAll('.preset').forEach(function(b) {
         b.classList.toggle('active', b.dataset.val === this.value);
-      });
+      }.bind(this));
     });
   });
 </script>
