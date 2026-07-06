@@ -181,7 +181,7 @@ function setupBetalingen() {
     );
     if (antwoord !== ui.Button.YES) return;
     sheet.clear();
-    sheet.clearDataValidations();
+    sheet.getRange(1, 1, sheet.getMaxRows(), sheet.getMaxColumns()).clearDataValidations();
     sheet.setConditionalFormatRules([]);
   } else {
     sheet = ss.insertSheet("Betalingen");
@@ -214,7 +214,7 @@ function setupEenmaligSponsors() {
     );
     if (antwoord !== ui.Button.YES) return;
     sheet.clear();
-    sheet.clearDataValidations();
+    sheet.getRange(1, 1, sheet.getMaxRows(), sheet.getMaxColumns()).clearDataValidations();
     sheet.setConditionalFormatRules([]);
   } else {
     sheet = ss.insertSheet("Eenmalige Sponsors");
@@ -601,7 +601,7 @@ function refreshOverzichtFormulas() {
   }
 
   overzichtSheet.clear();
-  overzichtSheet.clearDataValidations();
+  overzichtSheet.getRange(1, 1, overzichtSheet.getMaxRows(), overzichtSheet.getMaxColumns()).clearDataValidations();
   overzichtSheet.setConditionalFormatRules([]);
 
   var headers = ["NAAM", "EMAIL", "PER BIRDIE (€)", "MAX SEIZOEN (€)", "TOTAAL BIRDIES", "BEREKEND BEDRAG (€)", "CAP BEREIKT?"];
@@ -624,6 +624,12 @@ function refreshOverzichtFormulas() {
     .setRanges([overzichtSheet.getRange("G2:G200")])
     .build();
   overzichtSheet.setConditionalFormatRules([rule]);
+
+  overzichtSheet.getRange("I1").setValue("TOTAAL PER BIRDIE (€)")
+    .setBackground("#9D174D").setFontColor("#ffffff").setFontWeight("bold");
+  overzichtSheet.getRange("I2").setFormula("=SUM(C2:C200)")
+    .setNumberFormat('€#,##0.00').setFontWeight("bold");
+  overzichtSheet.setColumnWidth(9, 180);
 
   SpreadsheetApp.getUi().alert("Overzicht bijgewerkt.");
 }
@@ -718,6 +724,12 @@ function setupOverzicht() {
     .setRanges([overzichtSheet.getRange("G2:G200")])
     .build();
   overzichtSheet.setConditionalFormatRules([rule]);
+
+  overzichtSheet.getRange("I1").setValue("TOTAAL PER BIRDIE (€)")
+    .setBackground("#9D174D").setFontColor("#ffffff").setFontWeight("bold");
+  overzichtSheet.getRange("I2").setFormula("=SUM(C2:C200)")
+    .setNumberFormat('€#,##0.00').setFontWeight("bold");
+  overzichtSheet.setColumnWidth(9, 180);
 
   SpreadsheetApp.getUi().alert(
     "Klaar! Tabbladen 'Birdies' en 'Overzicht' zijn aangemaakt.\n\n" +
